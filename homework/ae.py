@@ -130,7 +130,7 @@ class PatchAutoEncoder(torch.nn.Module, PatchAutoEncoderBase):
     class PatchDecoder(torch.nn.Module):
         def __init__(self, patch_size: int, latent_dim: int, bottleneck: int):
             super().__init__()
-            self.patchify = PatchifyLinear(patch_size, latent_dim)
+            self.unpatchify = UnpatchifyLinear(patch_size, latent_dim)
             self.conv1 = torch.nn.ConvTranspose2d(bottleneck, bottleneck, kernel_size=3, padding=1, stride=1)
             self.conv2 = torch.nn.ConvTranspose2d(bottleneck, latent_dim, kernel_size=3, stride=1, padding=1)
             self.gelu = torch.nn.GELU()
@@ -140,7 +140,7 @@ class PatchAutoEncoder(torch.nn.Module, PatchAutoEncoderBase):
             x = self.gelu(self.conv1(x))
             x = self.gelu(self.conv2(x))
             x = chw_to_hwc(x)
-            return self.patchify(x)
+            return self.unpatchify(x)
 
     def __init__(self, patch_size: int = 25, latent_dim: int = 128, bottleneck: int = 128):
         super().__init__()
