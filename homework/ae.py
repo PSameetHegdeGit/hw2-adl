@@ -114,31 +114,26 @@ class PatchAutoEncoder(torch.nn.Module, PatchAutoEncoderBase):
         def __init__(self, patch_size: int, latent_dim: int, bottleneck: int):
             super().__init__()
             self.patchify = PatchifyLinear(patch_size, latent_dim)
-            self.conv1 = torch.nn.Conv2d(latent_dim, bottleneck, kernel_size=3, padding=1, stride=1)
-            # self.conv2 = torch.nn.Conv2d(bottleneck, bottleneck, kernel_size=3, stride=1, padding=1)
+            self.conv = torch.nn.Conv2d(latent_dim, bottleneck, kernel_size=3, padding=1, stride=1)
             self.gelu = torch.nn.GELU()
-
 
 
         def forward(self, x: torch.Tensor) -> torch.Tensor:
             x = self.patchify(x)
             x = hwc_to_chw(x)
-            x = self.gelu(self.conv1(x))
-            # x = self.gelu(self.conv2(x))
+            x = self.gelu(self.conv(x))
             return chw_to_hwc(x)
 
     class PatchDecoder(torch.nn.Module):
         def __init__(self, patch_size: int, latent_dim: int, bottleneck: int):
             super().__init__()
             self.unpatchify = UnpatchifyLinear(patch_size, latent_dim)
-            # self.conv1 = torch.nn.ConvTranspose2d(bottleneck, bottleneck, kernel_size=3, padding=1, stride=1)
-            self.conv2 = torch.nn.ConvTranspose2d(bottleneck, latent_dim, kernel_size=3, stride=1, padding=1)
+            self.conv = torch.nn.ConvTranspose2d(bottleneck, latent_dim, kernel_size=3, stride=1, padding=1)
             self.gelu = torch.nn.GELU()
 
         def forward(self, x: torch.Tensor) -> torch.Tensor:
             x = hwc_to_chw(x)
-            x = self.gelu(self.conv1(x))
-            # x = self.gelu(self.conv2(x))
+            x = self.gelu(self.conv(x))
             x = chw_to_hwc(x)
             return self.unpatchify(x)
 
