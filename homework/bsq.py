@@ -57,7 +57,13 @@ class BSQ(torch.nn.Module):
         - L2 normalization
         - differentiable sign
         """
-        print(x.shape)
+        print("tensor shape:", x.shape)
+
+        batch_size = x.size(0)
+        x = x.view(batch_size, -1)
+
+        # Print the shape after reshaping
+        print(f"Shape after reshaping: {x.shape}")
         #TODO: use a linear down-projection into codebook bits
         x = self.linear_down(x)
         #TODO: apply L2 normalization
