@@ -61,7 +61,7 @@ class BSQ(torch.nn.Module):
         print("tensor shape:", x.shape)
 
         batch_size = x.size(0)
-        x = x.view(batch_size, -1)
+        x = x.view(batch_size, 128)
 
         # Print the shape after reshaping
         print(f"Shape after reshaping: {x.shape}")
