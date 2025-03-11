@@ -57,7 +57,7 @@ class BSQ(torch.nn.Module):
         - L2 normalization
         - differentiable sign
         """
-
+        print(x.shape)
         #TODO: use a linear down-projection into codebook bits
         x = self.linear_down(x)
         #TODO: apply L2 normalization
