@@ -117,7 +117,8 @@ class BSQPatchAutoEncoder(PatchAutoEncoder, Tokenizer):
         return self.decode(self.bsq.decode_index(x))
 
     def encode(self, x: torch.Tensor) -> torch.Tensor:
-        return self.bsq.encode(super().encode(x))
+        x = super().encode(x)
+        return self.bsq.encode(x)
 
     def decode(self, x: torch.Tensor) -> torch.Tensor:
         return super().decode(self.bsq.decode(x))
@@ -139,8 +140,8 @@ class BSQPatchAutoEncoder(PatchAutoEncoder, Tokenizer):
               }
         """
         image, additional_losses = super().forward(x)
-        additional_losses.update({
-            "cb0": (torch.bincount(self.encode_index(x).flatten(), minlength=2**self.bsq.codebook_bits) == 0).float().mean().detach(),
-            "cb2": (torch.bincount(self.encode_index(x).flatten(), minlength=2**self.bsq.codebook_bits) <= 2).float().mean().detach()
-        })
+        # additional_losses.update({
+        #     "cb0": (torch.bincount(self.encode_index(x).flatten(), minlength=2**self.bsq.codebook_bits) == 0).float().mean().detach(),
+        #     "cb2": (torch.bincount(self.encode_index(x).flatten(), minlength=2**self.bsq.codebook_bits) <= 2).float().mean().detach()
+        # })
         return image, additional_losses
