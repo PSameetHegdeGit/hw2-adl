@@ -46,7 +46,7 @@ class Tokenizer(abc.ABC):
 class BSQ(torch.nn.Module):
     def __init__(self, codebook_bits: int, embedding_dim: int):
         super().__init__()
-        self._codebook_bits = codebook_bits
+        self.codebook_bits = codebook_bits
         self.embedding_dim = embedding_dim
         self.linear_down = torch.nn.Linear(embedding_dim, codebook_bits)
         self.linear_up = torch.nn.Linear(codebook_bits, embedding_dim)
@@ -93,7 +93,7 @@ class BSQ(torch.nn.Module):
         return (x * 2 ** torch.arange(x.size(-1)).to(x.device)).sum(dim=-1)
 
     def _index_to_code(self, x: torch.Tensor) -> torch.Tensor:
-        return 2 * ((x[..., None] & (2 ** torch.arange(self._codebook_bits).to(x.device))) > 0).float() - 1
+        return 2 * ((x[..., None] & (2 ** torch.arange(self.codebook_bits).to(x.device))) > 0).float() - 1
 
 
 class BSQPatchAutoEncoder(PatchAutoEncoder, Tokenizer):
