@@ -46,7 +46,6 @@ class Tokenizer(abc.ABC):
 class BSQ(torch.nn.Module):
     def __init__(self, codebook_bits: int, embedding_dim: int):
         super().__init__()
-        print(f"Codebook bits: {codebook_bits} and embedding dim: {embedding_dim}")
         self._codebook_bits = codebook_bits
         self.embedding_dim = embedding_dim
         self.linear_down = torch.nn.Linear(embedding_dim, codebook_bits)
