@@ -70,7 +70,7 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
     def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, dict[str, torch.Tensor]]:
         # Assume a tensor of shape (B, h, w) of integers
         x = self.embedding(x)
-
+        print(f"tensor shape prior to flattening: {x.shape}\n")
         B, h, w, c = x.shape
         # TODO flatten tensor into a sequence
         x = x.view(B, -1)
