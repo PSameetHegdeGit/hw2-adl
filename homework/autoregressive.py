@@ -76,7 +76,7 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
 
         # TODO generate the square sequence mask
         seq_len = x.shape[1]
-        mask = torch.nn.Transformer.generate_square_subsequent_mask(seq_len)
+        mask = torch.nn.Transformer.generate_square_subsequent_mask(seq_len).to(x.device)
         print("sequence length: ", seq_len)
         print("mask shape: ", mask.shape)
 
