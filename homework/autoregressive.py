@@ -3,6 +3,7 @@
 import abc
 
 import torch
+import math
 
 
 def load() -> torch.nn.Module:
@@ -74,14 +75,14 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
         B, h, w, c = x.shape
         # TODO flatten tensor into a sequence
         x = x.view(B, -1)
-        print(x.shape)
+        print(f"\ntensor shape: {x.shape}\n")
 
         # TODO shift sequence by 1 position
         x = torch.nn.ConstantPad1d((1, 0), 0)(x)
 
         # TODO generate the square sequence mask
         seq_len = x.shape[1]
-        mask = torch.nn.Transformer.generate_square_subsequent_mask(seq_len).to(x.device)
+        mask = torch.nn.Transformer.generate_square_subsequent_mask(seq_len)
 
         # TODO pass through the transformer
         x = self.transformer(x, mask)
