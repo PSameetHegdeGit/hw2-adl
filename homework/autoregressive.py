@@ -84,7 +84,7 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
         print(f"tensor shape after embedding: {x.shape}\n")
 
         # TODO shift sequence by 1 position
-        pad = torch.zeros(x.shape[0], 1, x.shape[2])
+        pad = torch.zeros(x.shape[0], 1, x.shape[2]).to(x.device)
         x = torch.cat([pad, x[:, :-1, :]], dim=1)
 
         print(f"shifted tensor shape: {x.shape}\n")
