@@ -73,7 +73,8 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
 
         B, h, w = x.shape
         # TODO flatten tensor into a sequence
-        x = x.view(B, -1, x.size(-1))
+        x = x.view(B, -1)
+        print(x.shape)
 
         # TODO shift sequence by 1 position
         x = torch.nn.ConstantPad1d((1, 0), 0)(x)
