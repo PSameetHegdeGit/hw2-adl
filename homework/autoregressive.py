@@ -69,6 +69,7 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
 
     def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, dict[str, torch.Tensor]]:
         # Assume a tensor of shape (B, h, w) of integers
+        print(f"tensor shape prior to embedding: {x.shape}\n")
         x = self.embedding(x)
         print(f"tensor shape prior to flattening: {x.shape}\n")
         B, h, w, c = x.shape
@@ -98,4 +99,4 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
 
 
     def generate(self, B: int = 1, h: int = 30, w: int = 20, device=None) -> torch.Tensor:  # noqa
-        raise NotImplementedError()
+        return 0
