@@ -78,7 +78,7 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
 
         # TODO shift sequence by 1 position
         x = torch.nn.ConstantPad1d((1, 0), 0)(x)
-
+        print(f"shifted tensor shape: {x.shape}\n")
         # TODO generate the square sequence mask
         seq_len = x.shape[1]
         mask = torch.nn.Transformer.generate_square_subsequent_mask(seq_len)
