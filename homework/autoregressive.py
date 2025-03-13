@@ -70,28 +70,29 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
     def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, dict[str, torch.Tensor]]:
         # Assume a tensor of shape (B, h, w) of integers
         print(f"tensor shape prior to embedding: {x.shape}\n")
-        x = self.embedding(x)
-        print(f"tensor shape prior to flattening: {x.shape}\n")
-        B, h, w, c = x.shape
         # TODO flatten tensor into a sequence
-        x = x.view(B, -1)
-        print(f"\ntensor shape: {x.shape}\n")
+        B, h, w = x.shape
+        x = x.flatten(1)
+
+        # TODO generate the square sequence mask
+        seq_len = x.shape[1]
+        mask = torch.nn.Transformer.generate_square_subsequent_mask(seq_len)
+        print("sequence length: ", seq_len)
+        print("mask shape: ", mask.shape)
+
+        x = self.embedding(x)
+        print(f"tensor shape after embedding: {x.shape}\n")
 
         # TODO shift sequence by 1 position
         x = torch.nn.ConstantPad1d((1, 0), 0)(x)
         print(f"shifted tensor shape: {x.shape}\n")
-        # TODO generate the square sequence mask
-        seq_len = x.shape[1]
-        print("sequence length: ", seq_len)
-        mask = torch.nn.Transformer.generate_square_subsequent_mask(seq_len)
-        print("mask shape: ", mask.shape)
+
         # TODO pass through the transformer
         x = self.transformer(x, mask)
         print("shape after transformer: ", x.shape)
 
         # TODO produce a probability over the next token
         x = self.fc(x)
-
         x = x.view(B, h, w, -1)
 
         return x, {}
