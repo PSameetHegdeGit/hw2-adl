@@ -65,7 +65,6 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
             dim_feedforward=1024
         )
         self.fc = torch.nn.Linear(d_latent, n_tokens)
-        self.mask = torch.nn.Transformer.generate_square_subsequent_mask(1)
 
 
     def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, dict[str, torch.Tensor]]:
@@ -83,9 +82,10 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
         # TODO generate the square sequence mask
         seq_len = x.shape[1]
         mask = torch.nn.Transformer.generate_square_subsequent_mask(seq_len)
-
+        print("mask shape: ", mask.shape)
         # TODO pass through the transformer
         x = self.transformer(x, mask)
+        print("shape after transformer: ", x.shape)
 
         # TODO produce a probability over the next token
         x = self.fc(x)
