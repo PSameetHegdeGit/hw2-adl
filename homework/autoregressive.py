@@ -71,7 +71,7 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
         # Assume a tensor of shape (B, h, w) of integers
         x = self.embedding(x)
 
-        B, h, w = x.shape
+        B, h, w, c = x.shape
         # TODO flatten tensor into a sequence
         x = x.view(B, -1)
         print(x.shape)
