@@ -62,7 +62,8 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
         self.transformer = torch.nn.TransformerEncoderLayer(
             d_model=d_latent,
             nhead=8,
-            dim_feedforward=1024
+            dim_feedforward=1024,
+            batch_first=True,
         )
         self.fc = torch.nn.Linear(d_latent, n_tokens)
 
