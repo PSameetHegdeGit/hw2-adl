@@ -1,3 +1,5 @@
+## CREDITS: With support from GPT-4o through Githuh Copilot
+
 import abc
 
 import torch
@@ -41,7 +43,7 @@ class Autoregressive(abc.ABC):
         """
 
 
-class AutoregressiveModel(torch.nn.Module):
+class AutoregressiveModel(torch.nn.Module, Autoregressive):
     """
     Implement an auto-regressive model.
     The input is a set of patch tokens (integers), the output is an image of probability.
@@ -53,12 +55,44 @@ class AutoregressiveModel(torch.nn.Module):
     Hint: You can complete this homework without using positional embeddings
     """
 
-    def __init__(self, d_latent: int = 128, n_tokens: int = 2**10):
+    def __init__(self, d_latent: int = 128, n_tokens: int = 2 ** 10):
         super().__init__()
-        raise NotImplementedError()
+        self.embedding = torch.nn.Embedding(n_tokens, d_latent)
+        self.transformer = torch.nn.TransformerEncoderLayer(
+            d_model=d_latent,
+            nhead=8,
+            dim_feedforward=1024
+        )
+        self.fc = torch.nn.Linear(d_latent, n_tokens)
+        self.mask = torch.nn.Transformer.generate_square_subsequent_mask(1)
+
 
     def forward(self, x: torch.Tensor) -> tuple[torch.Tensor, dict[str, torch.Tensor]]:
-        raise NotImplementedError()
+        # Assume a tensor of shape (B, h, w) of integers
+        x = self.embedding(x)
+
+        B, h, w = x.shape
+        # TODO flatten tensor into a sequence
+        x = x.view(B, -1, x.size(-1))
+
+        # TODO shift sequence by 1 position
+        x = torch.nn.ConstantPad1d((1, 0), 0)(x)
+
+        # TODO generate the square sequence mask
+        seq_len = x.shape[1]
+        mask = torch.nn.Transformer.generate_square_subsequent_mask(seq_len).to(x.device)
+
+        # TODO pass through the transformer
+        x = self.transformer(x, mask)
+
+        # TODO produce a probability over the next token
+        x = self.fc(x)
+
+        x = x.view(B, h, w, -1)
+
+        return x, {}
+
+
 
     def generate(self, B: int = 1, h: int = 30, w: int = 20, device=None) -> torch.Tensor:  # noqa
         raise NotImplementedError()
