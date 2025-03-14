@@ -103,4 +103,15 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
 
 
     def generate(self, B: int = 1, h: int = 30, w: int = 20, device=None) -> torch.Tensor:  # noqa
-        return 0
+        generated = torch.zeros(B, h, w).long().to(device)
+
+        for i in range(h):
+            for j in range (w):
+                logits, _ = self.forward(generated)
+                probs = torch.softmax(logits[:, i, j, :], dim=-1)
+                next_token = torch.argmax(probs, dim=-1)
+                generated[:, i, j] = next_token
+
+        return generated # (B, h, w)
+
+
