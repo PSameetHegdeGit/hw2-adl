@@ -106,10 +106,10 @@ class AutoregressiveModel(torch.nn.Module, Autoregressive):
         generated = torch.zeros(B, h, w).long().to(device)
 
         for i in range(h):
-            for j in range (w):
+            for j in range(w):
                 logits, _ = self.forward(generated)
                 probs = torch.softmax(logits[:, i, j, :], dim=-1)
-                next_token = torch.argmax(probs, dim=-1)
+                next_token = torch.multinomial(probs, num_samples=1).squeeze(-1)
                 generated[:, i, j] = next_token
 
         return generated # (B, h, w)
